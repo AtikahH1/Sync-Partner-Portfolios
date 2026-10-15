@@ -140,3 +140,49 @@ jobs:
 
               return `partner-${safeName}`;
             }
+
+            async function pause(milliseconds) {
+              return new Promise(
+                resolve => setTimeout(resolve, milliseconds)
+              );
+            }
+
+            /*
+            * Creates a label if it does not already exist.
+            */
+            async function ensureLabel(
+              owner,
+              repo,
+              labelName,
+              color,
+              description
+            ) {
+              try {
+                await github.rest.issue.getLabel({
+                  owner,
+                  repo,
+                  name: labelName
+                });
+
+                core.info(
+                  `Label "${labelName}" already exists in ${owner}/${repo}.`
+                );
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name: labelName,
+                  color,
+                  description
+                });
+
+                core.info(
+                  `Created label "$[labelName]" in ${owner}/${repo}.`
+                );
+              }
+            }
+            
