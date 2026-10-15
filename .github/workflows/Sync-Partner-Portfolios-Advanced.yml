@@ -440,4 +440,58 @@ jobs:
                 issue: response.data
               };
             }
+
+            /*
+            * Creates or updates a portfolio issue when the source
+            * summary issue is missing.
+            *
+            * This makes missing partner reporting visible rather
+            * silently ignoring that repository.
+            */
+            async function upsertMissingSummaryIssue({
+              partner,
+              sourceOwner,
+              sourceRepo,
+              respositoryMetadata,
+              openIssueCount,
+              partnerLabel
+            }) {
+              const sourceRepositoryName =
+                `${sourceOwner}/$sourceRepo}`;
+
+              const existingIssue =
+                await findExistingPortfolioIssue(
+                  sourceRepositoryName
+                );
+
+              const repositoryUrl =
+                buildRepositoryUrl(sourceOwner, sourceRepo);
+
+              const title =
+                `[Partner Portfolio] ${partner.partnerName}`;
+
+              const body = [
+                buildSourceMarker(sourceRepositoryName),
+                "",
+                `# ${partner.partnerName}`,
+                "",
+                "## Portfolio Sync Status",
+                "",
+                `No issue labelled \`${sourceLabel}\` was found in the source repository.`,
+                "",
+                "## Repository Metadata",
+                "",
+                `- **Partner:** ${partner.partnerName}`,
+                `- **Partner code:** ${partner.shortName}`,
+                `- **Source repository:** ${repositoryUrl}`,
+                `- **Repository last updated:** ${repositoryMetadata.updated_at}`,
+                `- **Open issues in particular repository:** ${openIssueCount}`,
+                `- **Portfolio synchronization time:** ${new Date().toISOString()}`,
+                "",
+                "## Required Action",
+                "",
+                `Create or select one issue in the partner repository and apply the \`${sourceLabel}\` label.`,
+                "",
+                "That issue will become the approved source for the next portfolio synchronization."
+              ].join("\n");
             
