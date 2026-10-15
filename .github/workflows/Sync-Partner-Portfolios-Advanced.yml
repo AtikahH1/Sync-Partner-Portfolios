@@ -646,4 +646,32 @@ jobs:
                     partnerLabel
                   });
                 }
+
+                results.push({
+                  partner: partner.partnerName,
+                  repository: partner.repo,
+                  action: result.action,
+                  portfolioIssueNumber:
+                    resut.issue.number
+                  portfolioIssueUrl:
+                    result.issue.html_url
+                });
+
+                await pause(750);
+              } catch (error) {
+                const errorMessage =
+                  error.message || String(error);
+
+                failures.push({
+                  partner: partner.partnerName,
+                  repository: partner.repo,
+                  error: errorMessage
+                });
+
+                core.error(
+                  `Failed to synchronize ${partner.partnerName} ` +
+                  `from ${partner.repo}: ${errorMessage}`
+                );
+              }
+            }
             
