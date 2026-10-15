@@ -62,3 +62,36 @@ jobs:
                 repo: "YOUR-ORGANIZATION/THEME-TC3",
               }
             ];
+
+            /*
+            * Label required on the approved summary issues
+            * in each external partner repository.
+            */
+            const sourceLabel = "portfolio-sync";
+
+            /*
+            * Labels applied to the synchronized issue in the 
+            * internal portfolio repository.
+            */
+            const portfolioLabels = [
+              "Theme",
+              "portfolio-summary",
+              "automated-sync"
+            ];
+
+            /* The repository containing this workflow is treated
+            * as the target portfolio repository.
+            */
+            const portfolioOwner = context.repo.owner;
+            const portfolioRepo = context.repo.repo;
+
+            /*
+            * GitHub REST API version.
+            */
+            const apiVersion = "2022-11.28";
+
+            /*
+            * ==========================================================
+            * HELPER FUNCTIONS
+            * ==========================================================
+            */
