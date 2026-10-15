@@ -1,0 +1,32 @@
+name: Sync Partner Portfolios
+
+on:
+  # Allows you to run the workflow manually from the Actions page.
+  workflow_dispatch:
+
+  # Runs automatically every four hours.
+  # GitHub cron expressions use UTC.
+  schedule:
+    - cron: "15 */4 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: sync-partner-portfolios
+  cancel-in-progress: false
+
+jobs:
+  sync-partners:
+    name: Synchronize partner summaries
+    runs-on: self-hosted
+
+    steps:
+      - name: Read partner repositories and update portfolio
+        uses: actions/github-script@v8
+        with:
+          # This secret must contain a token that can:
+          # 1. Read Issues and Metadata in every partner repository.
+          # 2. Write Issues and Metadata in this portfolio repository.
+          github-token: ${{ secrets.PORTFOLIO_TOKEN }}
