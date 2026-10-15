@@ -534,5 +534,44 @@ jobs:
               };
             }
 
+            /*
+            * ===================================================================
+            * PREPARE PORTFOLIO LABELS
+            * ===================================================================
+            */
+
+            await ensureLabel(
+              portfolioOwner,
+              portfolioRepo,
+              "Theme",
+              "0052CC",
+              "Theme programme tracking"
+            );
+
+            await ensureLabel(
+              portfolioOwner,
+              portfolioRepo,
+              "portfolio-summary",
+              "5319E7",
+              "Automatically synchronized partner portfolio record"
+            );
+
+            await ensureLabel(
+              portfolioOwner,
+              portfolioRepo,
+              "automated-sync",
+              "BFDADC",
+              "Managed by an automated synchronization workflow"
+            );
+
+            await ensureLabel(
+              portfolioOwner,
+              portfolioRepo,
+              "sync-attention-required",
+              "D93F0B",
+              "Portfolio synchronization required attention"
+            );
+            
+
             
             
