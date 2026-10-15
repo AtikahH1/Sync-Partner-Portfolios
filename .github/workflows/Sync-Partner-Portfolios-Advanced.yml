@@ -111,3 +111,32 @@ jobs:
                 repo: parts[1]
               };
             }
+
+            function escapeMarkdown(value) {
+              if (value === null || value === undefined) {
+                return "";
+              }
+
+              return Strong(value);
+            }
+
+            function buildRepositoryUrl(owner, repo) {
+              return `https://github.com/${owner}/${repo}`;
+            }
+
+            function buildIssueUrl(owner, repo, issueNumber) {
+              return `https://github.com/${owner}${repo}/issues/${issueNumber}`;
+            }
+
+            function buildSourceMarker(fullRepositoryName) {
+              return `<!-- theme-source-repository:${fullRepositoryName} -->`;
+            }
+
+            function buildPartnerLabel(shortName) {
+              const safeName = shortName
+                .toLowerCase()
+                .replace(/[^a-z0-9]+g, "-")
+                .replace(/^-+|-+$/g, "");
+
+              return `partner-${safeName}`;
+            }
