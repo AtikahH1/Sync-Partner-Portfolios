@@ -219,3 +219,35 @@ jobs:
             }
 
             /*
+            * Retrieves repository-level metadata.
+            */
+            async function getRepositoryMetadata(
+              sourceOwner,
+              sourceRepo
+            ) {
+              const response = await github.rest.repos.get({
+                owner: sourceOwner,
+                repo: sourceRepo
+              });
+
+              return response.data;
+            }
+
+            /*
+            * Counts open issues in the source repository.
+            *
+            * Pull requests are excluded.
+            */
+            async function countOpenIssues(
+              sourceOwner,
+              sourceRepo
+            ) {
+              const items = await github.paginate(
+                github.rest.issues.listForRepo,
+                {
+                  owner: sourceOwner,
+                  repo: sourceRepo,
+                  state: "open",
+                  per_page: 100
+                }
+              );
