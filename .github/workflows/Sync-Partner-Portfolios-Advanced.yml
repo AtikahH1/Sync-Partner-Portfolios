@@ -30,3 +30,35 @@ jobs:
           # 1. Read Issues and Metadata in every partner repository.
           # 2. Write Issues and Metadata in this portfolio repository.
           github-token: ${{ secrets.PORTFOLIO_TOKEN }}
+
+          script: |
+            /*
+            * =========================================================
+            * PORTFOLIO CONFIGURATION
+            * =========================================================
+            *
+            * Edit this list whenever a new partner repository is added.
+            *
+            * repo must use the exact owner/repository format.
+            * partnerName is the same shown in the internal portfolio.
+            *
+            * Only issues carrying the sourceLabel are synchronized.
+            */
+
+            const partnerRepositories = [
+              {
+                partnerName: "Test Client One",
+                shortName: "TC1",
+                repo: "YOUR-ORGANIZATION/THEME-TC1"
+              },
+              {
+                partnerName: "Test Client Two",
+                shortName: "TC2",
+                repo: "YOUR-ORGANIZATION/THEME-TC2",
+              },
+              {
+                partnerName: "Test Client Three",
+                shortName: "TC3",
+                repo: "YOUR-ORGANIZATION/THEME-TC3",
+              }
+            ];
