@@ -358,4 +358,86 @@ jobs:
                 "Internal-only notes should be added as comments or maintained in a separate issue."
               ].join("\n");
             }
+
+            /*
+            * Creates of update the corresponding issue in the
+            * internal portfolio repository.
+            */
+            async function upsertPortfolioIssue({
+              partner,
+              sourceOwner,
+              sourceRepo,
+              sourceIssue,
+              repositoryMetadata,
+              openIssueCount,
+              partnerLabel
+            }) {
+              const sourceRepositoryName =
+                `${sourceOwner}/${sourceRepo}`;
+
+              const existingIssue =
+                await findExistingPortfolioIssue(
+                  sourceRepositoryName
+                );
+
+              const title =
+                `[Partner Portfolio] ${partner.partnerName}`;
+
+              const body =
+                buildPortfolioIssueBody({
+                  partner,
+                  sourceOwner,
+                  sourceRepo,
+                  sourceIssue,
+                  repositoryMetadata,
+                  openIssueCount
+                });
+
+              const labels = [
+                ...portfolioLabels,
+                partnerLabel
+              ];
+
+              if (existingIssue) {
+                const response =
+                  await github.rest.issues.update({
+                    owner: portfolioOwner,
+                    repo: portfolioRepo,
+                    issue_number: existingIssue.number,
+                    title,
+                    body,
+                    labels,
+                    state: "open"
+                  });
+
+                core.info(
+                  `Updated portfolio issue #${response.data.number} ` +
+                  `for ${partner.partnerName}.`
+                );
+
+                return {
+                  action: "updated",
+                  issue: response.data
+                };
+              }
+
+              const response =
+                await github.rest.issues.create({
+                  owner: portfolioOwner,
+                  repo: portfolioRepo,
+                  title,
+                  body,
+                  labels
+                });
+
+              core.info(
+                `Created portfolio issue #${response.data.number} ` +
+                `for ${partner.partnerName}.`
+              );
+
+              return {
+                action: "created",
+                issue: response.data
+              };
+            }
             
