@@ -251,3 +251,42 @@ jobs:
                   per_page: 100
                 }
               );
+
+              return items.filter(
+                item => !item.pull.request
+              ).length;
+            }
+
+            /*
+            * Finds the existing synchronized portfolio issue by
+            * inspecting the hidden source repository marker.
+            *
+            * This avoids duplicate partner issues across repeated runs.
+            */
+            async function findExistingPortfolioIssue(
+              sourceRepositoryName
+            ) {
+              const marker = buildSourceMarker(
+                sourceRepositoryName
+              );
+
+              const portfolioIssues = await github.paginate(
+                github.rest.issues.listForRepo,
+                {
+                  owner: portfolioOwner,
+                  repo: portfolioRepo,
+                  state: "all",
+                  labels: "portfolio-summary",
+                  per_page: 100
+                }
+              );
+
+              return portfolioIssues.find(issue => {
+                if (issue.pull_request) {
+                  return false;
+                }
+
+                return issue.body && issue.body.includes(marker);
+              });
+            }
+            
