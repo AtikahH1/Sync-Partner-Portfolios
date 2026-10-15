@@ -289,4 +289,73 @@ jobs:
                 return issue.body && issue.body.includes(marker);
               });
             }
+
+            /*
+            * Creates the body of the internal synchronized issue.
+            *
+            * The approved source issue body is copied into an
+            * explicitly marked section.
+            */
+            function buildPortfolioIssueBody({
+              partner,
+              sourceOwner,
+              sourceRepo,
+              sourceIssue,
+              repositoryMetadata,
+              openIssueCount
+            }) {
+              const sourceRepositoryName =
+                `${sourceOwner}/${sourceRepo}`;
+
+              const repositoryUrl =
+                buildRepositoryUrl(sourceOwner, sourceRepo);
+
+              const sourceIssueUrl =
+                buildIssueUrl(
+                  sourceOwner,
+                  sourceRepo,
+                  sourceIssue.number
+                );
+
+              const syncTime =
+                new Date().toISOString();
+
+              const approvedSummary =
+                sourceIssue.body &&
+                sourceIssue.body.trim().length > 0
+                  ? sourceIssue.body.trim()
+                  : "_No summary content has been entered._";
+
+              return [
+                buildSourceMarker(sourceRepositoryName),
+                "",
+                `# ${partner.partnerName}`,
+                "",
+                "> This internal portfolio record is synchronized automatically from the partner repository's approved portfolio summary issue.",
+                "",
+                `- **Partner:** ${partner.partnerName}`,
+                `- **Partner code:** ${partner.shortName}`,
+                `- **Source repository:** ${repositoryUrl}`,
+                `- **Approved summary issue:** ${sourceISsueUrl}`,
+                `- **Source issue state:** ${sourceIssue.state}`,
+                `- **Source issue last updated:** ${sourceIssue.updated_at}`,
+                `- **Repository last updated:** ${repositoryMetadata.updated_at}`,
+                `- **Open issues in partner repository:** ${openIssueCount}`,
+                `- **Portfolio synchornization time:** ${syncTime}`,
+                "",
+                "## Approved Partner Update",
+                "",
+                approvedSummary,
+                "",
+                "---",
+                "",
+                "## Synchronization Notice",
+                "",
+                `This issue is managed by the \`Sync THEME Partner Portfolios\` workflow.`,
+                "",
+                "Do not edit the snychronized section directly becasue the nefot workflow run will replace it.",
+                "",
+                "Internal-only notes should be added as comments or maintained in a separate issue."
+              ].join("\n");
+            }
             
