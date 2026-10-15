@@ -571,7 +571,79 @@ jobs:
               "D93F0B",
               "Portfolio synchronization required attention"
             );
-            
 
-            
+            /*
+            * ================================================================
+            * SYNCHRONIZE EVERY PARTNER
+            * ================================================================
+            */
+
+            const results = [];
+            const failures = [];
+
+            for (const partner of partnerRepositories) {
+              const partnerLabel =
+                buildPartnerLabel(partner.shortName);
+
+              try {
+                await ensureLabel(
+                  portfolioOwner,
+                  portfolioRepo,
+                  partnerLabel,
+                  "0E8A16",
+                  `Portfolio record for ${partner.partnerName}`
+                );
+
+                const {
+                  owner: sourceOwner,
+                  repo: sourceRepo
+                } = splitRepository(partner.repo);
+
+                core.info(
+                  `Reading ${sourceOwner}/${sourceRepo} ` +
+                  `for ${partner.partnerName}.`
+                );
+
+                const [
+                  repositoryMetadata,
+                  sourceIssue,
+                  openIssueCount
+                ] = await Promise.all([
+                  getRepositoryMetadata(
+                    sourceOwner,
+                    sourceRepo
+                  ),
+                  findApprovedSummaryIssue(
+                    sourceOwner,
+                    sourceRepo
+                  ),
+                  countOpenIssues(
+                    sourceOwner,
+                    sourceRepo
+                  )
+                ]);
+
+                let result;
+
+                if (sourceIssue) {
+                  result = await upsertPortfolioIssue({
+                    partner,
+                    sourceOwner,
+                    sourceRepo,
+                    sourceIssue,
+                    respositoryMetadata,
+                    openIssueCount,
+                    partnerLabel
+                  });
+                } else {
+                  result = await upsertMissingSummaryIssue({
+                    partner,
+                    sourceOwner,
+                    sourceRepo,
+                    sourceIssue,
+                    respositoryMetadata,
+                    openIssueCount,
+                    partnerLabel
+                  });
+                }
             
