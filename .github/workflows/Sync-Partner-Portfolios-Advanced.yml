@@ -494,4 +494,45 @@ jobs:
                 "",
                 "That issue will become the approved source for the next portfolio synchronization."
               ].join("\n");
+
+              const labels = [
+                ...portfolioLabels,
+                partnerLabel,
+                "sync-attention-required"
+              ];
+
+              if (existingIssue) {
+                const response =
+                  await github.rest.issues.update({
+                    owner: portfolioOwner,
+                    repo: portfolioRepo,
+                    issue_number: existingIssue.number,
+                    title,
+                    body,
+                    labels,
+                    state: "open"
+                  });
+
+                return {
+                  action: "updated-missing-summary",
+                  issue: response.data
+                };
+              }
+
+              const response =
+                await github.rest.issues.create({
+                  owner: portfolioOwner,
+                  repo: portfolioRepo,
+                  title,
+                  body,
+                  labels
+                });
+
+              return {
+                action: "created-missing-summary",
+                issue: response.data
+              };
+            }
+
+            
             
