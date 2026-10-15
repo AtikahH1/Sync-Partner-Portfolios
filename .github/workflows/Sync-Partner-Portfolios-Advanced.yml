@@ -674,4 +674,56 @@ jobs:
                 );
               }
             }
+
+            /*
+            * ==============================================================
+            * ACTION SUMMARY
+            * ==============================================================
+            */
+
+            await core.summary
+              .addHeading("Theme Partner Portfolio Synchronization")
+              .addTable([
+                [
+                  {
+                    data: "Partner",
+                    header: true
+                  },
+                  {
+                    data: Repository",
+                    header: true
+                  },
+                  {
+                    data: "Result",
+                    header: true
+                  },
+                  {
+                    data: Portfolio issue",
+                    header: true
+                  }
+                ],
+                ...results.map(result => [
+                  result.partner,
+                  result.repository,
+                  result.action,
+                  `#${result.portfolioIssueNumber}`
+                ]),
+                ...failures.map(failure => [
+                  failure.partner,
+                  failure.repository,
+                  `Failed: ${failure.error}`,
+                  "-"
+                ])
+              ])
+              .write();
+
+            if (failures.length > 0) {
+              core.setFailed(
+                `${failures.length} partner synchronization operation(s) failed.`
+              );
+            } else {
+              core.notice(
+                `Successfully synchornized ${results.length} partner repositories.`
+              );
+            }
             
