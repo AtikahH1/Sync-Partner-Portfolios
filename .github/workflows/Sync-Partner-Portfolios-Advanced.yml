@@ -1,4 +1,4 @@
-name: Sync Partner Portfolios
+name: Sync Theme Partner Portfolios
 
 on:
   # Allows you to run the workflow manually from the Actions page.
@@ -14,7 +14,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: sync-partner-portfolios
+  group: sync-theme-partner-portfolios
   cancel-in-progress: false
 
 jobs:
@@ -29,12 +29,12 @@ jobs:
           # This secret must contain a token that can:
           # 1. Read Issues and Metadata in every partner repository.
           # 2. Write Issues and Metadata in this portfolio repository.
-          github-token: ${{ secrets.PORTFOLIO_TOKEN }}
+          github-token: ${{ secrets.THEME_PORTFOLIO_TOKEN }}
 
           script: |
             /*
             * =========================================================
-            * PORTFOLIO CONFIGURATION
+            * THEME PORTFOLIO CONFIGURATION
             * =========================================================
             *
             * Edit this list whenever a new partner repository is added.
@@ -74,7 +74,7 @@ jobs:
             * internal portfolio repository.
             */
             const portfolioLabels = [
-              "Theme",
+              "THEME",
               "portfolio-summary",
               "automated-sync"
             ];
