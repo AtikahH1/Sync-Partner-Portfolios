@@ -185,4 +185,37 @@ jobs:
                 );
               }
             }
-            
+
+            /*
+            * Retrieves the most recently updated issue carrying
+            * the portfolio-sync label.
+            *
+            * Pull requests are excluded becasue the Issues API
+            * can also return pull requests.
+            */
+            asyn function findApprovedSummaryIssue(
+              sourceOwner,
+              sourceRepo
+            ) {
+              const response = await github.rest.issues.listForRepor({
+                owner: sourceOwner,
+                repo: sourceRepo,
+                state: "all",
+                labels: sourceLabel,
+                sort: "updated",
+                direction: "desc",
+                per_page: 100
+              });
+
+              const issuesOnly = response.data.filter(
+                item => !item.pull_request
+              );
+
+              if (issuesOnly.length === 0) {
+                return null;
+              }
+
+              return issuesOnly[0];
+            }
+
+            /*
